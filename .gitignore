@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Data & runtime (server will generate these)
+data/submissions/
+data/results/
+data/saves/
+data/game_config.json
+
+# OS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/

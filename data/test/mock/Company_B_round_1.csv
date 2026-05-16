@@ -1,0 +1,15 @@
+RD,1V1,Class,APP
+T1,60,40,15
+T2,8,8,3
+T3,3,3,2
+
+Marketing,1V1,Class,APP
+T1,50,30,15
+T2,10,8,5
+T3,5,5,3
+
+Teachers,1V1,Class,APP
+T1,20,10,0
+T2,3,2,0
+T3,2,1,0
+
