@@ -12,6 +12,7 @@ import pandas as pd
 import os
 import json
 from pathlib import Path
+import matplotlib.pyplot as plt
 
 from models import GameState
 from game_engine import GameEngine
@@ -383,14 +384,21 @@ def generate_summary(company_name, company_data, all_results, input_data):
     return " | ".join(parts)
 
 
-def show_round_results(res):
+def show_round_results(res, view_company=None):
+    """
+    显示轮次结果
+    view_company: 如果指定，则只显示该公司的详细数据（玩家模式）；
+                  为 None 时显示所有公司数据（admin 模式）
+    """
     st.divider()
     current_r = res.get("round", 0)
     st.markdown(f"### {t('result_summary').format(current_r, '')}")
 
+    companies = list(res["companies"].keys())
+    is_player_view = view_company is not None
+
     # 市场概览
     st.markdown(f"#### {t('market_overview')}")
-    companies = list(res["companies"].keys())
     mc = st.columns(len(companies) + 1)
     with mc[0]:
         st.markdown(f"<div style='text-align:center'><b>{t('market')}</b></div>", unsafe_allow_html=True)
@@ -403,10 +411,67 @@ def show_round_results(res):
         with mc[i + 1]:
             d = res["companies"][cn]
             st.markdown(f"<div style='text-align:center'><b>{cn}</b></div>", unsafe_allow_html=True)
-            st.markdown(f"<div style='text-align:center'>💰 {d['cash']:,.0f}</div>", unsafe_allow_html=True)
-            st.markdown(f"<div style='text-align:center'>📈 {d['net_profit']:,.0f}</div>", unsafe_allow_html=True)
+            if is_player_view and cn != view_company:
+                # 玩家模式下，其他公司只显示占位符，隐藏真实财务数据
+                st.markdown(f"<div style='text-align:center'>💰 ---</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align:center'>📈 ---</div>", unsafe_allow_html=True)
+            else:
+                st.markdown(f"<div style='text-align:center'>💰 {d['cash']:,.0f}</div>", unsafe_allow_html=True)
+                st.markdown(f"<div style='text-align:center'>📈 {d['net_profit']:,.0f}</div>", unsafe_allow_html=True)
 
-    # 公开信息（市场情报）
+    # 图表区域：饼状图 + 柱状图
+    st.markdown("---")
+    chart_cols = st.columns(2)
+
+    with chart_cols[0]:
+        st.markdown(f"**{t('market_distribution')}**")
+        fig1, ax1 = plt.subplots(figsize=(5, 3.5))
+        labels = list(res["market_totals"].keys())
+        values = list(res["market_totals"].values())
+        colors = ['#FF6B6B', '#4ECDC4', '#45B7D1']
+        wedges, texts, autotexts = ax1.pie(
+            values, labels=labels, autopct='%1.1f%%',
+            colors=colors, startangle=90, explode=[0.02]*len(labels)
+        )
+        for autotext in autotexts:
+            autotext.set_fontsize(9)
+            autotext.set_fontweight('bold')
+        ax1.set_title(f"Round {current_r}", fontsize=11, pad=10)
+        st.pyplot(fig1)
+        plt.close(fig1)
+
+    with chart_cols[1]:
+        st.markdown(f"**{t('revenue_comparison')}**")
+        fig2, ax2 = plt.subplots(figsize=(5, 3.5))
+        company_list = list(res["companies"].keys())
+        revenues = [res["companies"][cn]["total_revenue"] / 10000 for cn in company_list]
+
+        if is_player_view:
+            bar_colors = ['#1f77b4' if cn == view_company else '#d3d3d3' for cn in company_list]
+        else:
+            bar_colors = ['#1f77b4'] * len(company_list)
+
+        bars = ax2.bar(company_list, revenues, color=bar_colors, edgecolor='white', linewidth=0.5)
+        ax2.set_ylabel(t("revenue_10k"))
+        ax2.set_title(f"Round {current_r}", fontsize=11, pad=10)
+        ax2.spines['top'].set_visible(False)
+        ax2.spines['right'].set_visible(False)
+
+        for bar, cn in zip(bars, company_list):
+            height = bar.get_height()
+            if not is_player_view or cn == view_company:
+                ax2.text(bar.get_x() + bar.get_width() / 2., height,
+                         f'{height:.1f}', ha='center', va='bottom', fontsize=8, fontweight='bold')
+            else:
+                ax2.text(bar.get_x() + bar.get_width() / 2., height,
+                         '---', ha='center', va='bottom', fontsize=8, color='gray')
+
+        plt.setp(ax2.get_xticklabels(), rotation=15, ha='right')
+        plt.tight_layout()
+        st.pyplot(fig2)
+        plt.close(fig2)
+
+    # 公开信息（市场情报）—— 所有玩家都能看到
     st.markdown("---")
     st.markdown(f"#### {t('public_info')}")
     
@@ -421,7 +486,7 @@ def show_round_results(res):
     pub_df = pd.DataFrame(public_data)
     st.dataframe(pub_df, hide_index=True, use_container_width=True)
 
-    # 品牌排名
+    # 品牌排名 —— 公开信息
     if res.get("brand_rankings"):
         st.markdown("---")
         st.markdown(f"#### {t('brand_ranking')}")
@@ -441,11 +506,15 @@ def show_round_results(res):
                             f"&nbsp;&nbsp;&nbsp;&nbsp;+{boost:.0f}% {t('brand_boost')} | -{discount:.0f}% {t('brand_discount')}"
                         )
 
-    # 产品明细
+    # 产品明细 —— 玩家模式下只显示自己的，admin 显示全部
     st.markdown("---")
     st.markdown(f"#### {t('product_detail')}")
 
     for cn in companies:
+        # 玩家模式下跳过其他公司
+        if is_player_view and cn != view_company:
+            continue
+
         d = res["companies"][cn]
         with st.expander(f"🏢 {cn} - {t('cash')} {d['cash']:,.0f} | {t('net_worth')} {d['cash'] - d['debt']:,.0f}", expanded=True):
             
@@ -649,10 +718,10 @@ def show_player_page(company_name: str):
     
     if next_round > config.TOTAL_ROUNDS:
         st.success("🎉 游戏已结束！")
-        # 显示最终结果
+        # 显示最终结果（玩家只能看到自己的数据）
         all_results = load_all_results(current_round)
         if all_results:
-            show_round_results(all_results[current_round])
+            show_round_results(all_results[current_round], view_company=company_name)
         return
     
     rule = get_round_rule(next_round)
@@ -690,7 +759,7 @@ def show_player_page(company_name: str):
         if results:
             st.divider()
             st.markdown(f"### 📊 第 {next_round} 轮结果已公布")
-            show_round_results(results)
+            show_round_results(results, view_company=company_name)
         return
     
     # 显示本轮结果（如果主持人已运行但自己还没提交下一轮）
@@ -698,7 +767,7 @@ def show_player_page(company_name: str):
         results = load_results_from_file(current_round)
         if results:
             with st.expander(f"📊 {t('view_results')} (Round {current_round})"):
-                show_round_results(results)
+                show_round_results(results, view_company=company_name)
     
     # 重建 game_state（用于显示公司当前状态）
     state = GameState()

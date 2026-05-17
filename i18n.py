@@ -132,6 +132,9 @@ T3,10,10,0
         "admin_link": "主持人链接",
         "copy_link": "复制链接",
         "link_copied": "链接已复制",
+        "market_distribution": "📊 市场分布",
+        "revenue_comparison": "📊 营收对比",
+        "revenue_10k": "营收 (万)",
     },
     "en": {
         "title": "📚 PalFish Business MindSet",
@@ -262,6 +265,9 @@ T3,10,10,0
         "admin_link": "Admin Link",
         "copy_link": "Copy Link",
         "link_copied": "Link copied",
+        "market_distribution": "📊 Market Distribution",
+        "revenue_comparison": "📊 Revenue Comparison",
+        "revenue_10k": "Revenue (10K)",
     }
 }
 
