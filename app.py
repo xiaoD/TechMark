@@ -558,11 +558,11 @@ def show_round_results(res, view_company=None):
             c4.metric(t("rd_expense"), f"{d['total_rd_cost']:,.0f}")
             c5.metric(t("interest"), f"{d['interest_payment']:,.0f}")
             
-            # 税收指标
+            # 税收指标（兼容旧结果文件）
             t1, t2, t3, t4 = st.columns(4)
-            t1.metric(t("vat_tax"), f"{d['vat_tax']:,.0f}")
-            t2.metric(t("income_tax"), f"{d['income_tax']:,.0f}")
-            t3.metric(t("total_tax"), f"{d['total_tax']:,.0f}")
+            t1.metric(t("vat_tax"), f"{d.get('vat_tax', 0):,.0f}")
+            t2.metric(t("income_tax"), f"{d.get('income_tax', 0):,.0f}")
+            t3.metric(t("total_tax"), f"{d.get('total_tax', 0):,.0f}")
             t4.metric(t("net_profit"), f"{d['net_profit']:,.0f}")
             
             # ====== 简短总结 ======
