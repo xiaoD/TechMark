@@ -419,37 +419,54 @@ def show_round_results(res, view_company=None):
                 st.markdown(f"<div style='text-align:center'>💰 {d['cash']:,.0f}</div>", unsafe_allow_html=True)
                 st.markdown(f"<div style='text-align:center'>📈 {d['net_profit']:,.0f}</div>", unsafe_allow_html=True)
 
-    # 图表区域：营收柱状图
+    # 图表区域：营收 + 净利润 + 净资产
     st.markdown("---")
-    st.markdown(f"**{t('revenue_comparison')}**")
-    fig, ax = plt.subplots(figsize=(8, 3.5))
+    chart_cols = st.columns(3)
     company_list = list(res["companies"].keys())
-    revenues = [res["companies"][cn]["total_revenue"] / 10000 for cn in company_list]
 
-    if is_player_view:
-        bar_colors = ['#1f77b4' if cn == view_company else '#d3d3d3' for cn in company_list]
-    else:
-        bar_colors = ['#1f77b4'] * len(company_list)
-
-    bars = ax.bar(company_list, revenues, color=bar_colors, edgecolor='white', linewidth=0.5)
-    ax.set_ylabel(t("revenue_10k"))
-    ax.set_title(f"Round {current_r}", fontsize=11, pad=10)
-    ax.spines['top'].set_visible(False)
-    ax.spines['right'].set_visible(False)
-
-    for bar, cn in zip(bars, company_list):
-        height = bar.get_height()
-        if not is_player_view or cn == view_company:
-            ax.text(bar.get_x() + bar.get_width() / 2., height,
-                     f'{height:.1f}', ha='center', va='bottom', fontsize=8, fontweight='bold')
+    def _draw_bar_chart(ax, values, ylabel, title_color):
+        if is_player_view:
+            colors = ['#1f77b4' if cn == view_company else '#d3d3d3' for cn in company_list]
         else:
-            ax.text(bar.get_x() + bar.get_width() / 2., height,
-                     '---', ha='center', va='bottom', fontsize=8, color='gray')
+            colors = ['#1f77b4'] * len(company_list)
+        bars = ax.bar(company_list, values, color=colors, edgecolor='white', linewidth=0.5)
+        ax.set_ylabel(ylabel)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        for bar, cn in zip(bars, company_list):
+            h = bar.get_height()
+            label = f'{h:.1f}' if (not is_player_view or cn == view_company) else '---'
+            color = 'black' if (not is_player_view or cn == view_company) else 'gray'
+            ax.text(bar.get_x() + bar.get_width() / 2., h, label,
+                    ha='center', va='bottom', fontsize=7, color=color, fontweight='bold')
+        plt.setp(ax.get_xticklabels(), rotation=20, ha='right', fontsize=8)
 
-    plt.setp(ax.get_xticklabels(), rotation=15, ha='right')
-    plt.tight_layout()
-    st.pyplot(fig)
-    plt.close(fig)
+    with chart_cols[0]:
+        st.markdown("**📊 Revenue (10K)**")
+        fig1, ax1 = plt.subplots(figsize=(3.8, 3.2))
+        revenues = [res["companies"][cn]["total_revenue"] / 10000 for cn in company_list]
+        _draw_bar_chart(ax1, revenues, "Revenue (10K)", "#1f77b4")
+        plt.tight_layout()
+        st.pyplot(fig1)
+        plt.close(fig1)
+
+    with chart_cols[1]:
+        st.markdown("**📈 Net Profit (10K)**")
+        fig2, ax2 = plt.subplots(figsize=(3.8, 3.2))
+        profits = [res["companies"][cn]["net_profit"] / 10000 for cn in company_list]
+        _draw_bar_chart(ax2, profits, "Profit (10K)", "#2ca02c")
+        plt.tight_layout()
+        st.pyplot(fig2)
+        plt.close(fig2)
+
+    with chart_cols[2]:
+        st.markdown("**💰 Net Worth (10K)**")
+        fig3, ax3 = plt.subplots(figsize=(3.8, 3.2))
+        net_worths = [(res["companies"][cn]["cash"] - res["companies"][cn]["debt"]) / 10000 for cn in company_list]
+        _draw_bar_chart(ax3, net_worths, "Net Worth (10K)", "#ff7f0e")
+        plt.tight_layout()
+        st.pyplot(fig3)
+        plt.close(fig3)
 
     # 公开信息（市场情报）—— 所有玩家都能看到
     st.markdown("---")
