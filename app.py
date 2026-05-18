@@ -59,12 +59,13 @@ def load_game_config() -> dict:
     with open(GAME_CONFIG_PATH, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-def save_game_config(companies: list, current_round: int = 0):
+def save_game_config(companies: list, current_round: int = 0, round_locked: bool = False):
     """保存游戏配置到文件"""
     GAME_CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
     data = {
         "companies": companies,
         "current_round": current_round,
+        "round_locked": round_locked,
         "created_at": pd.Timestamp.now().isoformat(),
     }
     with open(GAME_CONFIG_PATH, 'w', encoding='utf-8') as f:
@@ -729,6 +730,19 @@ def show_player_page(company_name: str):
             show_round_results(all_results[current_round], view_company=company_name)
         return
     
+    # ====== 轮次锁定检测 ======
+    if config_data.get("round_locked", False):
+        st.markdown(f'<div class="round-title">{t("round_locked_title")}</div>', unsafe_allow_html=True)
+        st.info(t("round_locked_msg"))
+        
+        # 显示上一轮结果
+        if current_round > 0:
+            results = load_results_from_file(current_round)
+            if results:
+                st.markdown(f"### {t('round_locked_view_result')} (Round {current_round})")
+                show_round_results(results, view_company=company_name)
+        return
+    
     rule = get_round_rule(next_round)
     
     st.markdown(f'<div class="round-title">{t("company_page_title").format(company_name, next_round)}</div>', unsafe_allow_html=True)
@@ -874,6 +888,39 @@ def show_admin_page():
     rule = get_round_rule(next_round)
     st.markdown(f'<div class="info-box">{rule.get_description(st.session_state.lang)}</div>', unsafe_allow_html=True)
     
+    # ====== 轮次锁定控制 ======
+    is_locked = config_data.get("round_locked", False)
+    
+    if is_locked:
+        st.warning(f"🔒 {t('locked_status')} {t('unlock_hint')}")
+        
+        # 显示上一轮结果
+        if current_round > 0:
+            res = load_results_from_file(current_round)
+            if res:
+                with st.expander(f"{t('round_locked_view_result')} (Round {current_round})", expanded=True):
+                    show_round_results(res)
+        
+        # 解锁按钮
+        cc1, cc2, cc3 = st.columns([1, 2, 1])
+        with cc2:
+            if st.button(t("unlock_round"), type="primary", use_container_width=True):
+                save_game_config(companies, current_round, round_locked=False)
+                st.success(t("unlock_success"))
+                st.rerun()
+        
+        # 更早的历史结果
+        if current_round > 1:
+            st.markdown("---")
+            st.markdown(f"### 📊 {t('history')}")
+            for rn in range(1, current_round):
+                res = load_results_from_file(rn)
+                if res:
+                    with st.expander(f"Round {rn}"):
+                        show_round_results(res)
+        
+        return  # 锁定状态下不显示提交和运行区域
+    
     # 提交状态表格
     st.markdown(f"### {t('submission_status')}")
     submissions = list_submissions(next_round, companies)
@@ -965,9 +1012,9 @@ def show_admin_page():
                 # 保存结果到文件
                 save_results_to_file(next_round, results)
                 save_round_results(results)
-                save_game_config(companies, next_round)
+                save_game_config(companies, next_round, round_locked=True)
                 
-                st.success(f"✅ 第 {next_round} 轮运行完成！")
+                st.success(f"✅ 第 {next_round} 轮运行完成！已锁定，玩家无法提交。请检查结果后点击「开启下一轮」。")
                 st.rerun()
     
     # 显示历史结果

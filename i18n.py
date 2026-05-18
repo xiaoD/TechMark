@@ -139,6 +139,13 @@ T3,10,10,0
         "income_tax": "所得税",
         "total_tax": "总税收",
         "pre_tax_profit": "税前利润",
+        "round_locked_title": "🔒 轮次锁定中",
+        "round_locked_msg": "主持人正在准备下一轮，请稍候...",
+        "unlock_round": "🔓 开启下一轮",
+        "unlock_success": "✅ 下一轮已开启！玩家现在可以提交决策。",
+        "locked_status": "🔒 当前轮次已锁定，玩家无法提交。",
+        "unlock_hint": "请检查上一轮结果后点击「开启下一轮」。",
+        "round_locked_view_result": "上一轮结果",
     },
     "en": {
         "title": "📚 PalFish Business MindSet",
@@ -276,6 +283,13 @@ T3,10,10,0
         "income_tax": "Income Tax",
         "total_tax": "Total Tax",
         "pre_tax_profit": "Pre-tax Profit",
+        "round_locked_title": "🔒 Round Locked",
+        "round_locked_msg": "The host is preparing the next round. Please wait...",
+        "unlock_round": "🔓 Unlock Next Round",
+        "unlock_success": "✅ Next round unlocked! Players can now submit decisions.",
+        "locked_status": "🔒 Current round is locked. Players cannot submit.",
+        "unlock_hint": "Review the previous round results, then click 'Unlock Next Round'.",
+        "round_locked_view_result": "Previous Round Results",
     }
 }
 
