@@ -419,57 +419,37 @@ def show_round_results(res, view_company=None):
                 st.markdown(f"<div style='text-align:center'>💰 {d['cash']:,.0f}</div>", unsafe_allow_html=True)
                 st.markdown(f"<div style='text-align:center'>📈 {d['net_profit']:,.0f}</div>", unsafe_allow_html=True)
 
-    # 图表区域：饼状图 + 柱状图
+    # 图表区域：营收柱状图
     st.markdown("---")
-    chart_cols = st.columns(2)
+    st.markdown(f"**{t('revenue_comparison')}**")
+    fig, ax = plt.subplots(figsize=(8, 3.5))
+    company_list = list(res["companies"].keys())
+    revenues = [res["companies"][cn]["total_revenue"] / 10000 for cn in company_list]
 
-    with chart_cols[0]:
-        st.markdown(f"**{t('market_distribution')}**")
-        fig1, ax1 = plt.subplots(figsize=(5, 3.5))
-        labels = list(res["market_totals"].keys())
-        values = list(res["market_totals"].values())
-        colors = ['#FF6B6B', '#4ECDC4', '#45B7D1']
-        wedges, texts, autotexts = ax1.pie(
-            values, labels=labels, autopct='%1.1f%%',
-            colors=colors, startangle=90, explode=[0.02]*len(labels)
-        )
-        for autotext in autotexts:
-            autotext.set_fontsize(9)
-            autotext.set_fontweight('bold')
-        ax1.set_title(f"Round {current_r}", fontsize=11, pad=10)
-        st.pyplot(fig1)
-        plt.close(fig1)
+    if is_player_view:
+        bar_colors = ['#1f77b4' if cn == view_company else '#d3d3d3' for cn in company_list]
+    else:
+        bar_colors = ['#1f77b4'] * len(company_list)
 
-    with chart_cols[1]:
-        st.markdown(f"**{t('revenue_comparison')}**")
-        fig2, ax2 = plt.subplots(figsize=(5, 3.5))
-        company_list = list(res["companies"].keys())
-        revenues = [res["companies"][cn]["total_revenue"] / 10000 for cn in company_list]
+    bars = ax.bar(company_list, revenues, color=bar_colors, edgecolor='white', linewidth=0.5)
+    ax.set_ylabel(t("revenue_10k"))
+    ax.set_title(f"Round {current_r}", fontsize=11, pad=10)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
 
-        if is_player_view:
-            bar_colors = ['#1f77b4' if cn == view_company else '#d3d3d3' for cn in company_list]
+    for bar, cn in zip(bars, company_list):
+        height = bar.get_height()
+        if not is_player_view or cn == view_company:
+            ax.text(bar.get_x() + bar.get_width() / 2., height,
+                     f'{height:.1f}', ha='center', va='bottom', fontsize=8, fontweight='bold')
         else:
-            bar_colors = ['#1f77b4'] * len(company_list)
+            ax.text(bar.get_x() + bar.get_width() / 2., height,
+                     '---', ha='center', va='bottom', fontsize=8, color='gray')
 
-        bars = ax2.bar(company_list, revenues, color=bar_colors, edgecolor='white', linewidth=0.5)
-        ax2.set_ylabel(t("revenue_10k"))
-        ax2.set_title(f"Round {current_r}", fontsize=11, pad=10)
-        ax2.spines['top'].set_visible(False)
-        ax2.spines['right'].set_visible(False)
-
-        for bar, cn in zip(bars, company_list):
-            height = bar.get_height()
-            if not is_player_view or cn == view_company:
-                ax2.text(bar.get_x() + bar.get_width() / 2., height,
-                         f'{height:.1f}', ha='center', va='bottom', fontsize=8, fontweight='bold')
-            else:
-                ax2.text(bar.get_x() + bar.get_width() / 2., height,
-                         '---', ha='center', va='bottom', fontsize=8, color='gray')
-
-        plt.setp(ax2.get_xticklabels(), rotation=15, ha='right')
-        plt.tight_layout()
-        st.pyplot(fig2)
-        plt.close(fig2)
+    plt.setp(ax.get_xticklabels(), rotation=15, ha='right')
+    plt.tight_layout()
+    st.pyplot(fig)
+    plt.close(fig)
 
     # 公开信息（市场情报）—— 所有玩家都能看到
     st.markdown("---")
