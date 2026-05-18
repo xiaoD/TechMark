@@ -732,7 +732,7 @@ def show_player_page(company_name: str):
     rule = get_round_rule(next_round)
     
     st.markdown(f'<div class="round-title">{t("company_page_title").format(company_name, next_round)}</div>', unsafe_allow_html=True)
-    st.markdown(f'<div class="info-box">{rule.description}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="info-box">{rule.get_description(st.session_state.lang)}</div>', unsafe_allow_html=True)
     
     # 检查是否已提交
     existing = load_submission(next_round, company_name)
@@ -872,7 +872,7 @@ def show_admin_page():
         return
     
     rule = get_round_rule(next_round)
-    st.markdown(f'<div class="info-box">{rule.description}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="info-box">{rule.get_description(st.session_state.lang)}</div>', unsafe_allow_html=True)
     
     # 提交状态表格
     st.markdown(f"### {t('submission_status')}")
