@@ -568,19 +568,20 @@ def show_round_results(res, view_company=None):
 
             st.dataframe(pd.DataFrame(product_rows), hide_index=True, use_container_width=True)
 
-            c1, c2, c3, c4, c5 = st.columns(5)
-            c1.metric(t("total_revenue"), f"{d['total_revenue']:,.0f}")
-            c2.metric(t("teacher_cost"), f"{d['total_teacher_cost']:,.0f}")
-            c3.metric(t("acquisition_cost"), f"{d['total_acquisition_cost']:,.0f}")
-            c4.metric(t("rd_expense"), f"{d['total_rd_cost']:,.0f}")
-            c5.metric(t("interest"), f"{d['interest_payment']:,.0f}")
-            
-            # 税收指标（兼容旧结果文件）
-            t1, t2, t3, t4 = st.columns(4)
-            t1.metric(t("vat_tax"), f"{d.get('vat_tax', 0):,.0f}")
-            t2.metric(t("income_tax"), f"{d.get('income_tax', 0):,.0f}")
-            t3.metric(t("total_tax"), f"{d.get('total_tax', 0):,.0f}")
-            t4.metric(t("net_profit"), f"{d['net_profit']:,.0f}")
+            # 财务汇总表格
+            st.markdown("**📊 Financial Summary**")
+            fin_rows = [
+                {"Item": t("total_revenue"), "Amount": f"{d['total_revenue']:,.0f}"},
+                {"Item": t("teacher_cost"), "Amount": f"{d['total_teacher_cost']:,.0f}"},
+                {"Item": t("acquisition_cost"), "Amount": f"{d['total_acquisition_cost']:,.0f}"},
+                {"Item": t("rd_expense"), "Amount": f"{d['total_rd_cost']:,.0f}"},
+                {"Item": t("interest"), "Amount": f"{d['interest_payment']:,.0f}"},
+                {"Item": t("vat_tax"), "Amount": f"{d.get('vat_tax', 0):,.0f}"},
+                {"Item": t("income_tax"), "Amount": f"{d.get('income_tax', 0):,.0f}"},
+                {"Item": t("total_tax"), "Amount": f"{d.get('total_tax', 0):,.0f}"},
+                {"Item": f"**{t('net_profit')}**", "Amount": f"**{d['net_profit']:,.0f}**"},
+            ]
+            st.dataframe(pd.DataFrame(fin_rows), hide_index=True, use_container_width=True)
             
             # ====== 简短总结 ======
             st.markdown("**📝 Summary**")
