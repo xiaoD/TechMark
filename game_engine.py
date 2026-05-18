@@ -332,14 +332,21 @@ class GameEngine:
             # 计算负债利息
             company.interest_payment = company.debt * config.INTEREST_RATE
             
-            # 净利润
-            company.net_profit = (
+            # 计算税收
+            company.vat_tax = company.total_revenue * config.VAT_RATE
+            pre_tax_profit = (
                 company.total_revenue
                 - company.total_teacher_cost
                 - company.total_acquisition_cost
                 - company.total_rd_cost
                 - company.interest_payment
+                - company.vat_tax
             )
+            company.income_tax = max(pre_tax_profit, 0) * config.INCOME_TAX_RATE
+            company.total_tax = company.vat_tax + company.income_tax
+            
+            # 净利润
+            company.net_profit = pre_tax_profit - company.income_tax
             
             # 更新资金
             company.cash += company.net_profit
@@ -399,6 +406,9 @@ class GameEngine:
                 "total_acquisition_cost": company.total_acquisition_cost,
                 "total_rd_cost": company.total_rd_cost,
                 "interest_payment": company.interest_payment,
+                "vat_tax": company.vat_tax,
+                "income_tax": company.income_tax,
+                "total_tax": company.total_tax,
                 "products": {},
             }
             

@@ -89,6 +89,9 @@ class Company:
     total_acquisition_cost: float = 0.0
     total_rd_cost: float = 0.0
     interest_payment: float = 0.0
+    vat_tax: float = 0.0          # 增值税（营收的7%）
+    income_tax: float = 0.0       # 所得税（利润的15%）
+    total_tax: float = 0.0        # 总税收
     net_profit: float = 0.0
     
     def __post_init__(self):
@@ -122,6 +125,9 @@ class Company:
         self.total_acquisition_cost = 0.0
         self.total_rd_cost = 0.0
         self.interest_payment = 0.0
+        self.vat_tax = 0.0
+        self.income_tax = 0.0
+        self.total_tax = 0.0
         self.net_profit = 0.0
         for p in self.products.values():
             p.reset_round()

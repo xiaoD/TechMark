@@ -135,6 +135,10 @@ T3,10,10,0
         "market_distribution": "📊 市场分布",
         "revenue_comparison": "📊 营收对比",
         "revenue_10k": "营收 (万)",
+        "vat_tax": "增值税",
+        "income_tax": "所得税",
+        "total_tax": "总税收",
+        "pre_tax_profit": "税前利润",
     },
     "en": {
         "title": "📚 PalFish Business MindSet",
@@ -268,6 +272,10 @@ T3,10,10,0
         "market_distribution": "📊 Market Distribution",
         "revenue_comparison": "📊 Revenue Comparison",
         "revenue_10k": "Revenue (10K)",
+        "vat_tax": "VAT",
+        "income_tax": "Income Tax",
+        "total_tax": "Total Tax",
+        "pre_tax_profit": "Pre-tax Profit",
     }
 }
 
