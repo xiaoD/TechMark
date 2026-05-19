@@ -146,6 +146,9 @@ T3,10,10,0
         "locked_status": "🔒 当前轮次已锁定，玩家无法提交。",
         "unlock_hint": "请检查上一轮结果后点击「开启下一轮」。",
         "round_locked_view_result": "上一轮结果",
+        "rerun_current_round": "🔄 重新运行本轮",
+        "rerun_confirm": "确定要重新运行第 {} 轮吗？已保存的结果将被删除，可以修改决策后重新运行。",
+        "rerun_success": "✅ 第 {} 轮已重置，可以修改决策后重新运行。",
     },
     "en": {
         "title": "📚 PalFish Business MindSet",
@@ -290,6 +293,9 @@ T3,10,10,0
         "locked_status": "🔒 Current round is locked. Players cannot submit.",
         "unlock_hint": "Review the previous round results, then click 'Unlock Next Round'.",
         "round_locked_view_result": "Previous Round Results",
+        "rerun_current_round": "🔄 Rerun This Round",
+        "rerun_confirm": "Are you sure you want to rerun Round {}? The saved result will be deleted and decisions can be modified.",
+        "rerun_success": "✅ Round {} has been reset. You can modify decisions and rerun.",
     }
 }
 

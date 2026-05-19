@@ -890,8 +890,18 @@ def show_admin_page():
                 with st.expander(f"{t('round_locked_view_result')} (Round {current_round})", expanded=True):
                     show_round_results(res)
         
-        # 解锁按钮
-        cc1, cc2, cc3 = st.columns([1, 2, 1])
+        # 解锁按钮 + 重新运行按钮
+        cc1, cc2, cc3 = st.columns([1, 1, 1])
+        with cc1:
+            if st.button(t("rerun_current_round"), use_container_width=True):
+                # 删除当前轮次结果文件
+                results_file = Path("data/results") / f"round_{current_round}_results.json"
+                if results_file.exists():
+                    results_file.unlink()
+                # 重置锁定状态，退回上一轮进度
+                save_game_config(companies, current_round - 1, round_locked=False)
+                st.success(t("rerun_success").format(current_round))
+                st.rerun()
         with cc2:
             if st.button(t("unlock_round"), type="primary", use_container_width=True):
                 save_game_config(companies, current_round, round_locked=False)
