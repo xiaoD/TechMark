@@ -132,7 +132,7 @@ ROUND_RULES = {
         enable_budget_constraint=False,
         enable_brand_discount=False,
         enable_capacity_refund=True,
-        enable_market_cap=False,
+        enable_market_cap=True,
         rd_affects_quality=True,
     ),
     
@@ -174,7 +174,7 @@ ROUND_RULES = {
         enable_budget_constraint=True,
         enable_brand_discount=False,
         enable_capacity_refund=True,
-        enable_market_cap=False,
+        enable_market_cap=True,
         rd_affects_quality=True,
     ),
     
@@ -228,7 +228,7 @@ ROUND_RULES = {
         enable_budget_constraint=True,
         enable_brand_discount=True,
         enable_capacity_refund=True,
-        enable_market_cap=False,
+        enable_market_cap=True,
         rd_affects_quality=True,
     ),
     
