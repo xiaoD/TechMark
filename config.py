@@ -102,6 +102,13 @@ PRICE_ELASTICITY = {
     "T3": 0.8,   # 三线：价格弹性高
 }
 
+# 产品类型竞争权重（反映用户天然偏好：1V1 > Class > APP）
+PRODUCT_TYPE_WEIGHT = {
+    "1V1":  1.0,   # 最高优先级
+    "Class": 0.8,  # 中等优先级
+    "APP":   0.3,  # 最低优先级（低价轻服务，天然吸引力弱）
+}
+
 # 每个销售人员可抵消的溢价惩罚比例
 SALES_BUFFER_PER_PERSON = 0.015  # 1.5%
 MAX_PRICE_FACTOR = 1.0

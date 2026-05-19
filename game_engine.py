@@ -216,8 +216,11 @@ class GameEngine:
             # 品牌竞争力加成
             brand_boost = boosts[market].get(company.name, 0.0)
             
-            # 吸引力 = 质量分 × 可获客数 × 价格因子 × (1 + 品牌竞争力加成)
-            attractiveness = product.quality_score * max_from_marketing * price_factor * (1 + brand_boost)
+            # 产品类型竞争权重（1V1 > Class > APP）
+            type_weight = config.PRODUCT_TYPE_WEIGHT.get(ptype, 1.0)
+            
+            # 吸引力 = 质量分 × 可获客数 × 价格因子 × (1 + 品牌竞争力加成) × 产品类型权重
+            attractiveness = product.quality_score * max_from_marketing * price_factor * (1 + brand_boost) * type_weight
             company_attractiveness[company.name] = {
                 "attractiveness": attractiveness,
                 "max_from_marketing": max_from_marketing,
