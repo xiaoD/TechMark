@@ -286,8 +286,8 @@ class GameEngine:
             # 记录通过营销投入获得的学员数（用于计算获客成本）
             product.marketing_students = extra
         
-        # 分配完成后，实时更新市场总人数（用于下一个产品类型的容量检查）
-        self.state.market_students[market] = sum(
+        # 分配完成后，实时累加市场总人数（用于下一个产品类型的容量检查）
+        self.state.market_students[market] += sum(
             c.products[product_id].students for c in self.state.companies.values()
         )
     
