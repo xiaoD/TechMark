@@ -308,9 +308,13 @@ ROUND_RULES = {
         name="终局之战",
         name_en="Final Battle",
         description="""
-        🎯 Round 5 Goal: Final Showdown
+        🎯 Round 5 Goal: Final Showdown — Market Boom!
         
-        All mechanisms active, market fully saturated!
+        All mechanisms active, market booming!
+        
+        📈 Market Changes:
+        - All markets capacity +30%
+        - All markets student budget +20%
         
         Keys to Victory:
         - Quality score accumulation (R&D investment from previous 4 rounds)
@@ -322,9 +326,13 @@ ROUND_RULES = {
         Winner determined by net worth ranking after this round!
         """,
         description_en="""
-        🎯 Round 5 Goal: Final Showdown
+        🎯 Round 5 Goal: Final Showdown — Market Boom!
         
-        All mechanisms active, market fully saturated!
+        All mechanisms active, market booming!
+        
+        📈 Market Changes:
+        - All markets capacity +30%
+        - All markets student budget +20%
         
         Keys to Victory:
         - Quality score accumulation (R&D investment from previous 4 rounds)
@@ -345,6 +353,11 @@ ROUND_RULES = {
         enable_capacity_refund=True,
         enable_market_cap=True,
         rd_affects_quality=True,
+        market_shocks={
+            "T1": {"budget_factor": 1.2, "capacity_factor": 1.3, "demand_factor": 1.0},
+            "T2": {"budget_factor": 1.2, "capacity_factor": 1.3, "demand_factor": 1.0},
+            "T3": {"budget_factor": 1.2, "capacity_factor": 1.3, "demand_factor": 1.0},
+        },
     ),
 }
 
