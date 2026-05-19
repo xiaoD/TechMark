@@ -250,7 +250,7 @@ ROUND_RULES = {
         - New demand +15%
         
         📉 T2 (Tier-2) Market Contraction:
-        - Student budget cap -30%
+        - Student budget cap unchanged
         - Market capacity -20%
         - New demand -25%
         
@@ -275,7 +275,7 @@ ROUND_RULES = {
         - New demand +15%
         
         📉 T2 (Tier-2) Market Contraction:
-        - Student budget cap -30%
+        - Student budget cap unchanged
         - Market capacity -20%
         - New demand -25%
         
@@ -298,7 +298,7 @@ ROUND_RULES = {
         rd_affects_quality=True,
         market_shocks={
             "T1": {"budget_factor": 1.2, "capacity_factor": 1.1, "demand_factor": 1.15},
-            "T2": {"budget_factor": 0.7, "capacity_factor": 0.8, "demand_factor": 0.75},
+            "T2": {"budget_factor": 1.0, "capacity_factor": 0.8, "demand_factor": 0.75},
             "T3": {"budget_factor": 1.0, "capacity_factor": 1.0, "demand_factor": 1.0},
         },
     ),
