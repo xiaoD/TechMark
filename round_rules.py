@@ -143,12 +143,17 @@ ROUND_RULES = {
         description="""
         🎯 Round 2 Goal: Master Pricing Strategy
         
-        New decision: Product Pricing
+        New decision: Unified Product Pricing
+        
+        Each product type (1V1 / Class / APP) now has ONE price across all markets.
+        Your price automatically determines market positioning:
+        - Higher price → better performance in T1 (price-insensitive market)
+        - Lower price → better performance in T3 (price-sensitive market)
         
         Student budget constraints are now active!
         - T1 student budget cap: 10,000 CNY
-        - T2 student budget cap: 4,000 CNY
-        - T3 student budget cap: 2,000 CNY
+        - T2 student budget cap: 6,000 CNY
+        - T3 student budget cap: 3,000 CNY
         
         If your price exceeds the student budget, all students will request refunds!
         Find the balance between high price/high margin and low price/high volume.
@@ -156,16 +161,21 @@ ROUND_RULES = {
         description_en="""
         🎯 Round 2 Goal: Master Pricing Strategy
         
-        New decision: Product Pricing
+        New decision: Unified Product Pricing
+        
+        Each product type (1V1 / Class / APP) now has ONE price across all markets.
+        Your price automatically determines market positioning:
+        - Higher price → better performance in T1 (price-insensitive market)
+        - Lower price → better performance in T3 (price-sensitive market)
         
         Student budget constraints are now active!
         - T1 student budget cap: 10,000 CNY
-        - T2 student budget cap: 4,000 CNY
-        - T3 student budget cap: 2,000 CNY
+        - T2 student budget cap: 6,000 CNY
+        - T3 student budget cap: 3,000 CNY
         
         If your price exceeds the student budget, all students will request refunds!
         Find the balance between high price/high margin and low price/high volume.
-        """,
+        """},
         enable_rd=True,
         enable_teachers=True,
         enable_marketing=True,

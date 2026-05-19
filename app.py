@@ -137,7 +137,7 @@ def parse_uploaded_file(uploaded_file, round_rule):
         marketing_matrix = [[0]*3 for _ in range(3)]
         teacher_matrix = [[0]*3 for _ in range(3)]
         sales_matrix = [[0]*3 for _ in range(3)]
-        pricing_matrix = [[0]*3 for _ in range(3)]
+        pricing_vector = [0]*3
 
         current_matrix = None
         row_idx = 0
@@ -168,6 +168,21 @@ def parse_uploaded_file(uploaded_file, round_rule):
                 row_idx = 0
                 continue
 
+            # 价格部分只读取第一行（统一产品定价，不分市场）
+            if current_matrix == 'pricing' and row_idx == 0:
+                vals = []
+                for j in range(1, min(4, len(line))):
+                    try:
+                        v = float(line[j]) if line[j] != '' and str(line[j]) != 'nan' else 0
+                        vals.append(v)
+                    except:
+                        vals.append(0)
+                while len(vals) < 3:
+                    vals.append(0)
+                pricing_vector = vals
+                row_idx += 1
+                continue
+
             if first_col in ['t1', 't2', 't3'] and current_matrix and row_idx < 3:
                 vals = []
                 for j in range(1, min(4, len(line))):
@@ -187,8 +202,6 @@ def parse_uploaded_file(uploaded_file, round_rule):
                     teacher_matrix[row_idx] = vals
                 elif current_matrix == 'sales':
                     sales_matrix[row_idx] = vals
-                elif current_matrix == 'pricing':
-                    pricing_matrix[row_idx] = vals
                 row_idx += 1
 
         decisions = {}
@@ -207,9 +220,9 @@ def parse_uploaded_file(uploaded_file, round_rule):
                 if round_rule.round_num >= 3:
                     dec["sales"] = int(sales_matrix[i][j])
                 if round_rule.enable_pricing:
-                    dec["price"] = pricing_matrix[i][j]
+                    dec["price"] = pricing_vector[j]
                 elif round_rule.use_default_prices:
-                    dec["price"] = config.DEFAULT_PRICES[market][ptype]
+                    dec["price"] = config.DEFAULT_PRICES[ptype]
                 decisions[pid] = dec
 
         return decisions
@@ -241,9 +254,9 @@ def matrix_to_decisions(rd_df, marketing_df, teacher_df, sales_df, pricing_df, r
             if round_rule.round_num >= 3:
                 dec["sales"] = int(sales_df.iloc[i, j])
             if round_rule.enable_pricing:
-                dec["price"] = pricing_df.iloc[i, j]
+                dec["price"] = pricing_df.iloc[0, j]
             elif round_rule.use_default_prices:
-                dec["price"] = config.DEFAULT_PRICES[market][ptype]
+                dec["price"] = config.DEFAULT_PRICES[ptype]
             decisions[pid] = dec
 
     return decisions
@@ -694,15 +707,27 @@ def render_company_input(company_name, state, rule, round_num, prefill_decisions
 
             if rule.enable_pricing:
                 st.markdown(f'<div class="matrix-title">{t("pricing")}</div>', unsafe_allow_html=True)
-                default_prices = [[config.DEFAULT_PRICES[m][p] for p in ["1V1", "Class", "APP"]] for m in ["T1", "T2", "T3"]]
+                default_prices = [config.DEFAULT_PRICES[p] for p in ["1V1", "Class", "APP"]]
+                # 预填充：从上次决策中读取该产品类型的价格（T1/T2/T3 任一均可，因为已统一）
+                price_values = []
+                for j, ptype in enumerate(["1V1", "Class", "APP"]):
+                    default = default_prices[j]
+                    if prefill_decisions and company_name in prefill_decisions:
+                        for market in ["T1", "T2", "T3"]:
+                            pid = f"{market}_{ptype}"
+                            dec = prefill_decisions[company_name].get(pid, {})
+                            if "price" in dec:
+                                default = dec["price"]
+                                break
+                    price_values.append(default)
                 pricing_df = st.data_editor(
-                    create_prefilled_matrix(prefill_decisions, company_name, "price", rule, default_values=default_prices),
+                    pd.DataFrame([price_values], columns=["1V1", "Class", "APP"]),
                     key=f"pr_{company_name}_r{round_num}",
                     num_rows="fixed", use_container_width=True,
                     column_config={"1V1": st.column_config.NumberColumn(min_value=0, step=100), "Class": st.column_config.NumberColumn(min_value=0, step=100), "APP": st.column_config.NumberColumn(min_value=0, step=100)}
                 )
             else:
-                pricing_df = create_matrix_df([[config.DEFAULT_PRICES[m][p] for p in ["1V1", "Class", "APP"]] for m in ["T1", "T2", "T3"]])
+                pricing_df = pd.DataFrame([[config.DEFAULT_PRICES[p] for p in ["1V1", "Class", "APP"]]], columns=["1V1", "Class", "APP"])
 
             decisions = matrix_to_decisions(rd_df, marketing_df, teacher_df, sales_df, pricing_df, rule)
             return decisions, True

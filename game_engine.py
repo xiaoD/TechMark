@@ -89,7 +89,7 @@ class GameEngine:
                     product.price = float(decision.get("price", 0))
                 elif self.current_rule.use_default_prices:
                     market, ptype = product_id.split('_')
-                    product.price = config.DEFAULT_PRICES[market][ptype]
+                    product.price = config.DEFAULT_PRICES[ptype]
                 
                 if self.current_rule.enable_teachers:
                     market, ptype = product_id.split('_')
@@ -198,7 +198,7 @@ class GameEngine:
             # 计算价格因子（第2轮起）
             price_factor = 1.0
             if self.current_rule.enable_pricing or self.current_rule.use_default_prices:
-                default_price = config.DEFAULT_PRICES[market][ptype]
+                default_price = config.DEFAULT_PRICES[ptype]
                 actual_price = product.price if product.price > 0 else default_price
                 
                 if actual_price > default_price:
