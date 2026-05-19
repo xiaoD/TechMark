@@ -27,6 +27,7 @@ class Product:
     # 记录
     revenue: float = 0.0         # 本轮收入
     teacher_cost: float = 0.0    # 本轮教师成本
+    sales_cost: float = 0.0      # 本轮销售成本
     acquisition_cost: float = 0.0  # 本轮获客成本
     refund_count: int = 0        # 本轮退费人数
     valid_students: int = 0      # 本轮有效学员（扣除退费后）
@@ -48,6 +49,7 @@ class Product:
         """重置本轮计算数据（保留状态）"""
         self.revenue = 0.0
         self.teacher_cost = 0.0
+        self.sales_cost = 0.0
         self.acquisition_cost = 0.0
         self.refund_count = 0
         self.valid_students = 0
@@ -86,6 +88,7 @@ class Company:
     # 本轮财务汇总
     total_revenue: float = 0.0
     total_teacher_cost: float = 0.0
+    total_sales_cost: float = 0.0
     total_acquisition_cost: float = 0.0
     total_rd_cost: float = 0.0
     interest_payment: float = 0.0
@@ -122,6 +125,7 @@ class Company:
         """重置本轮计算数据"""
         self.total_revenue = 0.0
         self.total_teacher_cost = 0.0
+        self.total_sales_cost = 0.0
         self.total_acquisition_cost = 0.0
         self.total_rd_cost = 0.0
         self.interest_payment = 0.0

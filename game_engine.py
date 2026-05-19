@@ -324,6 +324,9 @@ class GameEngine:
                 # 教师成本
                 product.teacher_cost = product.teachers * config.TEACHER_SALARY
                 
+                # 销售成本
+                product.sales_cost = product.sales * config.SALES_SALARY
+                
                 # 获客成本（仅计算通过营销投入获得的学员）
                 discount = discounts[product.market].get(company.name, 0.0)
                 base_cost = config.ACQUISITION_COST[product.market][product.product_type]
@@ -336,6 +339,7 @@ class GameEngine:
                 # 汇总到公司
                 company.total_revenue += product.revenue
                 company.total_teacher_cost += product.teacher_cost
+                company.total_sales_cost += product.sales_cost
                 company.total_acquisition_cost += product.acquisition_cost
                 company.total_rd_cost += rd_cost
             
@@ -347,6 +351,7 @@ class GameEngine:
             pre_tax_profit = (
                 company.total_revenue
                 - company.total_teacher_cost
+                - company.total_sales_cost
                 - company.total_acquisition_cost
                 - company.total_rd_cost
                 - company.interest_payment
@@ -413,6 +418,7 @@ class GameEngine:
                 "net_profit": company.net_profit,
                 "total_revenue": company.total_revenue,
                 "total_teacher_cost": company.total_teacher_cost,
+                "total_sales_cost": company.total_sales_cost,
                 "total_acquisition_cost": company.total_acquisition_cost,
                 "total_rd_cost": company.total_rd_cost,
                 "interest_payment": company.interest_payment,
@@ -432,6 +438,7 @@ class GameEngine:
                     "rd_budget": product.rd_budget,
                     "revenue": product.revenue,
                     "teacher_cost": product.teacher_cost,
+                    "sales_cost": product.sales_cost,
                     "acquisition_cost": product.acquisition_cost,
                     "refund_count": product.refund_count,
                     "valid_students": product.valid_students,

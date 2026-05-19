@@ -57,6 +57,9 @@ TEACHER_CAPACITY = {
 # 教师工资（每人每轮）
 TEACHER_SALARY = 10_000
 
+# 销售工资（每人每轮）
+SALES_SALARY = 8_000
+
 # ==================== 默认定价（前几轮固定） ====================
 DEFAULT_PRICES = {
     "T1": {"1V1": 3000, "Class": 1000, "APP": 150},

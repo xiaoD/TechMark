@@ -117,12 +117,13 @@ def t(key):
 
 
 def _calculate_total_spending(decisions: dict) -> float:
-    """计算决策总花费（R&D + Marketing + 教师工资）"""
+    """计算决策总花费（R&D + Marketing + 教师工资 + 销售工资）"""
     total = 0.0
     for dec in decisions.values():
         total += dec.get("rd", 0)
         total += dec.get("marketing", 0)
         total += dec.get("teachers", 0) * config.TEACHER_SALARY
+        total += dec.get("sales", 0) * config.SALES_SALARY
     return total
 
 
@@ -580,6 +581,7 @@ def show_round_results(res, view_company=None):
             fin_rows = [
                 {"Item": t("total_revenue"), "Amount": f"{d['total_revenue']:,.0f}"},
                 {"Item": t("teacher_cost"), "Amount": f"{d['total_teacher_cost']:,.0f}"},
+                {"Item": t("sales_cost"), "Amount": f"{d.get('total_sales_cost', 0):,.0f}"},
                 {"Item": t("acquisition_cost"), "Amount": f"{d['total_acquisition_cost']:,.0f}"},
                 {"Item": t("rd_expense"), "Amount": f"{d['total_rd_cost']:,.0f}"},
                 {"Item": t("interest"), "Amount": f"{d['interest_payment']:,.0f}"},
