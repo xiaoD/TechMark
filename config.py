@@ -114,6 +114,9 @@ PRODUCT_TYPE_WEIGHT = {
 
 # 每个销售人员可抵消的溢价惩罚比例
 SALES_BUFFER_PER_PERSON = 0.015  # 1.5%
+
+# 销售对冲溢价惩罚的上限
+MAX_SALES_BUFFER = 0.30  # 最高30%
 MAX_PRICE_FACTOR = 1.0
 MIN_PRICE_FACTOR = 0.5
 

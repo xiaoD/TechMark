@@ -205,10 +205,11 @@ class GameEngine:
                     # 计算溢价率
                     premium_rate = (actual_price - default_price) / default_price
                     
-                    # 第3轮起：销售对冲高价惩罚
+                    # 第3轮起：销售对冲高价惩罚（上限30%）
                     sales_buffer = 0.0
                     if self.current_rule.round_num >= 3:
                         sales_buffer = product.sales * config.SALES_BUFFER_PER_PERSON
+                        sales_buffer = min(sales_buffer, config.MAX_SALES_BUFFER)
                         sales_buffer = min(sales_buffer, premium_rate)
                     
                     effective_premium = max(0, premium_rate - sales_buffer)
