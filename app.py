@@ -116,6 +116,16 @@ def t(key):
     return get_text(key, st.session_state.lang)
 
 
+def _calculate_total_spending(decisions: dict) -> float:
+    """计算决策总花费（R&D + Marketing + 教师工资）"""
+    total = 0.0
+    for dec in decisions.values():
+        total += dec.get("rd", 0)
+        total += dec.get("marketing", 0)
+        total += dec.get("teachers", 0) * config.TEACHER_SALARY
+    return total
+
+
 def parse_uploaded_file(uploaded_file, round_rule):
     """解析英文CSV文件"""
     try:
@@ -805,6 +815,15 @@ def show_player_page(company_name: str):
                     st.error(f"⚠️ {t('mk_over')}! {t('mk_used')} {total_mk:.0f} / {t('mk_cap')} {cap_wan}")
                     st.stop()
             
+            # 校验总花费上限（账面现金 + 初始资金）
+            company = state.companies[company_name]
+            total_spending = _calculate_total_spending(decisions)
+            spending_limit = company.cash + config.INITIAL_CASH
+            if total_spending > spending_limit:
+                st.error(t("spending_limit_exceeded"))
+                st.error(t("spending_limit_msg").format(company_name, total_spending, spending_limit, company.cash, config.INITIAL_CASH))
+                st.stop()
+            
             save_submission(next_round, company_name, decisions)
             st.success(f"✅ {company_name} 第 {next_round} 轮决策已提交！")
             st.balloons()
@@ -993,6 +1012,20 @@ def show_admin_page():
                 
                 # 获取本轮所有决策
                 all_decisions = get_all_submissions(next_round, companies)
+                
+                # 校验总花费上限（账面现金 + 初始资金）
+                spending_errors = []
+                for c_name, c_decisions in all_decisions.items():
+                    company = state.companies[c_name]
+                    total_spending = _calculate_total_spending(c_decisions)
+                    spending_limit = company.cash + config.INITIAL_CASH
+                    if total_spending > spending_limit:
+                        spending_errors.append((c_name, total_spending, spending_limit, company.cash))
+                if spending_errors:
+                    for c_name, ts, sl, cash in spending_errors:
+                        st.error(t("spending_limit_exceeded"))
+                        st.error(t("spending_limit_msg").format(c_name, ts, sl, cash, config.INITIAL_CASH))
+                    st.stop()
                 
                 # 保存快照
                 all_hist_results = load_all_results(current_round)
