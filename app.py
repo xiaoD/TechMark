@@ -734,13 +734,6 @@ def show_player_page(company_name: str):
     if config_data.get("round_locked", False):
         st.markdown(f'<div class="round-title">{t("round_locked_title")}</div>', unsafe_allow_html=True)
         st.info(t("round_locked_msg"))
-        
-        # 显示上一轮结果
-        if current_round > 0:
-            results = load_results_from_file(current_round)
-            if results:
-                st.markdown(f"### {t('round_locked_view_result')} (Round {current_round})")
-                show_round_results(results, view_company=company_name)
         return
     
     rule = get_round_rule(next_round)
