@@ -32,9 +32,11 @@ class GameEngine:
         
         print(f"\n🎲 正在运行第 {round_num} 轮：{self.current_rule.name}")
         
-        # 1. 重置各公司本轮数据
+        # 1. 重置各公司本轮数据 + 市场累计人数
         for company in self.state.companies.values():
             company.reset_round()
+        for m in config.MARKETS:
+            self.state.market_students[m] = 0
         
         # 2. 应用玩家决策
         self._apply_decisions(decisions)
@@ -283,6 +285,11 @@ class GameEngine:
             product.students = final_allocated
             # 记录通过营销投入获得的学员数（用于计算获客成本）
             product.marketing_students = extra
+        
+        # 分配完成后，实时更新市场总人数（用于下一个产品类型的容量检查）
+        self.state.market_students[market] = sum(
+            c.products[product_id].students for c in self.state.companies.values()
+        )
     
     def _check_capacity_and_refund(self):
         """检查师资约束，超出部分退费"""
