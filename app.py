@@ -420,9 +420,8 @@ def show_round_results(res, view_company=None):
                 st.markdown(f"<div style='text-align:center'>💰 {d['cash']:,.0f}</div>", unsafe_allow_html=True)
                 st.markdown(f"<div style='text-align:center'>📈 {d['net_profit']:,.0f}</div>", unsafe_allow_html=True)
 
-    # 图表区域：营收 + 净利润 + 净资产
+    # 图表区域：营收 + 净利润 + 净资产（纵向排列）
     st.markdown("---")
-    chart_cols = st.columns(3)
     company_list = list(res["companies"].keys())
 
     def _draw_bar_chart(ax, values, ylabel, title_color):
@@ -439,35 +438,32 @@ def show_round_results(res, view_company=None):
             label = f'{h:.1f}' if (not is_player_view or cn == view_company) else '---'
             color = 'black' if (not is_player_view or cn == view_company) else 'gray'
             ax.text(bar.get_x() + bar.get_width() / 2., h, label,
-                    ha='center', va='bottom', fontsize=7, color=color, fontweight='bold')
-        plt.setp(ax.get_xticklabels(), rotation=20, ha='right', fontsize=8)
+                    ha='center', va='bottom', fontsize=9, color=color, fontweight='bold')
+        plt.setp(ax.get_xticklabels(), rotation=20, ha='right', fontsize=9)
 
-    with chart_cols[0]:
-        st.markdown("**📊 Revenue (10K)**")
-        fig1, ax1 = plt.subplots(figsize=(3.8, 3.2))
-        revenues = [res["companies"][cn]["total_revenue"] / 10000 for cn in company_list]
-        _draw_bar_chart(ax1, revenues, "Revenue (10K)", "#1f77b4")
-        plt.tight_layout()
-        st.pyplot(fig1)
-        plt.close(fig1)
+    st.markdown("**📊 Revenue (10K)**")
+    fig1, ax1 = plt.subplots(figsize=(8, 4.5))
+    revenues = [res["companies"][cn]["total_revenue"] / 10000 for cn in company_list]
+    _draw_bar_chart(ax1, revenues, "Revenue (10K)", "#1f77b4")
+    plt.tight_layout()
+    st.pyplot(fig1)
+    plt.close(fig1)
 
-    with chart_cols[1]:
-        st.markdown("**📈 Net Profit (10K)**")
-        fig2, ax2 = plt.subplots(figsize=(3.8, 3.2))
-        profits = [res["companies"][cn]["net_profit"] / 10000 for cn in company_list]
-        _draw_bar_chart(ax2, profits, "Profit (10K)", "#2ca02c")
-        plt.tight_layout()
-        st.pyplot(fig2)
-        plt.close(fig2)
+    st.markdown("**📈 Net Profit (10K)**")
+    fig2, ax2 = plt.subplots(figsize=(8, 4.5))
+    profits = [res["companies"][cn]["net_profit"] / 10000 for cn in company_list]
+    _draw_bar_chart(ax2, profits, "Profit (10K)", "#2ca02c")
+    plt.tight_layout()
+    st.pyplot(fig2)
+    plt.close(fig2)
 
-    with chart_cols[2]:
-        st.markdown("**💰 Net Worth (10K)**")
-        fig3, ax3 = plt.subplots(figsize=(3.8, 3.2))
-        net_worths = [(res["companies"][cn]["cash"] - res["companies"][cn]["debt"]) / 10000 for cn in company_list]
-        _draw_bar_chart(ax3, net_worths, "Net Worth (10K)", "#ff7f0e")
-        plt.tight_layout()
-        st.pyplot(fig3)
-        plt.close(fig3)
+    st.markdown("**💰 Net Worth (10K)**")
+    fig3, ax3 = plt.subplots(figsize=(8, 4.5))
+    net_worths = [(res["companies"][cn]["cash"] - res["companies"][cn]["debt"]) / 10000 for cn in company_list]
+    _draw_bar_chart(ax3, net_worths, "Net Worth (10K)", "#ff7f0e")
+    plt.tight_layout()
+    st.pyplot(fig3)
+    plt.close(fig3)
 
     # 公开信息（市场情报）—— 所有玩家都能看到
     st.markdown("---")
