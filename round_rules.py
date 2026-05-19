@@ -39,12 +39,6 @@ class RoundRule:
         self.description = description
         self.description_en = description_en
     
-    def get_description(self, lang: str = "zh") -> str:
-        return self.description_en if lang == "en" else self.description
-    
-    def get_name(self, lang: str = "zh") -> str:
-        return self.name_en if lang == "en" else self.name
-        
         self.enable_rd = enable_rd
         self.enable_teachers = enable_teachers
         self.enable_marketing = enable_marketing
@@ -63,6 +57,12 @@ class RoundRule:
                 self.market_shocks[m] = {"budget_factor": 1.0, "capacity_factor": 1.0, "demand_factor": 1.0}
         
         self.rd_affects_quality = rd_affects_quality
+    
+    def get_description(self, lang: str = "zh") -> str:
+        return self.description_en if lang == "en" else self.description
+    
+    def get_name(self, lang: str = "zh") -> str:
+        return self.name_en if lang == "en" else self.name
     
     @property
     def decision_variables(self) -> List[str]:
