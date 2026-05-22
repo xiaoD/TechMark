@@ -56,9 +56,9 @@ class GameEngine:
         if self.current_rule.enable_capacity_refund:
             self._check_capacity_and_refund()
         
-        # 7. 检查预算约束和退费
-        if self.current_rule.enable_budget_constraint:
-            self._check_budget_and_refund()
+        # 7. 【已取消】硬预算约束改为建议价软惩罚（在 _allocate_product_students 中处理）
+        # if self.current_rule.enable_budget_constraint:
+        #     self._check_budget_and_refund()
         
         # 8. 计算财务
         self._calculate_finance(discounts)
@@ -66,8 +66,8 @@ class GameEngine:
         # 9. 更新市场学员总数统计
         self._update_market_totals()
         
-        # 10. 更新质量分（退费惩罚）
-        if self.current_rule.enable_capacity_refund or self.current_rule.enable_budget_constraint:
+        # 10. 更新质量分（仅师资不足退费触发惩罚）
+        if self.current_rule.enable_capacity_refund:
             self._update_quality_scores()
         
         return self._get_round_results()
@@ -215,6 +215,15 @@ class GameEngine:
                     effective_premium = max(0, premium_rate - sales_buffer)
                     elasticity = config.PRICE_ELASTICITY[market]
                     price_factor = max(config.MIN_PRICE_FACTOR, 1.0 - effective_premium * elasticity)
+                
+                # 建议价软约束：超过市场建议价后销量锐减
+                reference_price = config.MARKET_REFERENCE_PRICE[market][ptype]
+                if actual_price > reference_price:
+                    overprice_ratio = actual_price / reference_price
+                    steepness = config.OVERPRICE_STEEPNESS[market]
+                    # 惩罚公式：每超标100%，吸引力除以 ratio^steepness
+                    penalty = max(0.02, 1.0 / (overprice_ratio ** steepness))
+                    price_factor *= penalty
             
             # 品牌竞争力加成
             brand_boost = boosts[market].get(company.name, 0.0)

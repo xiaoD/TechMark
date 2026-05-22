@@ -726,6 +726,13 @@ def render_company_input(company_name, state, rule, round_num, prefill_decisions
                     num_rows="fixed", use_container_width=True,
                     column_config={"1V1": st.column_config.NumberColumn(min_value=0, step=100), "Class": st.column_config.NumberColumn(min_value=0, step=100), "APP": st.column_config.NumberColumn(min_value=0, step=100)}
                 )
+                # 显示市场建议价提示
+                st.caption(
+                    "💡 Market Reference Prices (exceeding causes sharp demand drop):\n"
+                    "• T1: 1V1 ¥8,000 / Class ¥4,000 / APP ¥800  |  "
+                    "• T2: 1V1 ¥5,000 / Class ¥2,500 / APP ¥500  |  "
+                    "• T3: 1V1 ¥2,000 / Class ¥1,000 / APP ¥200"
+                )
             else:
                 pricing_df = pd.DataFrame([[config.DEFAULT_PRICES[p] for p in ["1V1", "Class", "APP"]]], columns=["1V1", "Class", "APP"])
 

@@ -150,12 +150,13 @@ ROUND_RULES = {
         - Higher price → better performance in T1 (price-insensitive market)
         - Lower price → better performance in T3 (price-sensitive market)
         
-        Student budget constraints are now active!
-        - T1 student budget cap: 10,000 CNY
-        - T2 student budget cap: 6,000 CNY
-        - T3 student budget cap: 3,000 CNY
+        Market Reference Prices (soft constraint):
+        - T1: 1V1 ¥8,000 / Class ¥4,000 / APP ¥800
+        - T2: 1V1 ¥5,000 / Class ¥2,500 / APP ¥500
+        - T3: 1V1 ¥2,000 / Class ¥1,000 / APP ¥200
         
-        If your price exceeds the student budget, all students will request refunds!
+        ⚠️ If your price exceeds the reference price for a market, demand will drop sharply in that market!
+        T1 tolerates overpricing better; T3 is extremely price-sensitive.
         Find the balance between high price/high margin and low price/high volume.
         """,
         description_en="""
@@ -168,20 +169,21 @@ ROUND_RULES = {
         - Higher price → better performance in T1 (price-insensitive market)
         - Lower price → better performance in T3 (price-sensitive market)
         
-        Student budget constraints are now active!
-        - T1 student budget cap: 10,000 CNY
-        - T2 student budget cap: 6,000 CNY
-        - T3 student budget cap: 3,000 CNY
+        Market Reference Prices (soft constraint):
+        - T1: 1V1 ¥8,000 / Class ¥4,000 / APP ¥800
+        - T2: 1V1 ¥5,000 / Class ¥2,500 / APP ¥500
+        - T3: 1V1 ¥2,000 / Class ¥1,000 / APP ¥200
         
-        If your price exceeds the student budget, all students will request refunds!
+        ⚠️ If your price exceeds the reference price for a market, demand will drop sharply in that market!
+        T1 tolerates overpricing better; T3 is extremely price-sensitive.
         Find the balance between high price/high margin and low price/high volume.
-        """},
+        """,
         enable_rd=True,
         enable_teachers=True,
         enable_marketing=True,
         enable_pricing=True,
         use_default_prices=False,
-        enable_budget_constraint=True,
+        enable_budget_constraint=False,
         enable_brand_discount=False,
         enable_capacity_refund=True,
         enable_market_cap=True,
@@ -235,7 +237,7 @@ ROUND_RULES = {
         enable_marketing=True,
         enable_pricing=True,
         use_default_prices=False,
-        enable_budget_constraint=True,
+        enable_budget_constraint=False,
         enable_brand_discount=True,
         enable_capacity_refund=True,
         enable_market_cap=True,
@@ -301,7 +303,7 @@ ROUND_RULES = {
         enable_marketing=True,
         enable_pricing=True,
         use_default_prices=False,
-        enable_budget_constraint=True,
+        enable_budget_constraint=False,
         enable_brand_discount=True,
         enable_capacity_refund=True,
         enable_market_cap=True,
@@ -358,7 +360,7 @@ ROUND_RULES = {
         enable_marketing=True,
         enable_pricing=True,
         use_default_prices=False,
-        enable_budget_constraint=True,
+        enable_budget_constraint=False,
         enable_brand_discount=True,
         enable_capacity_refund=True,
         enable_market_cap=True,
