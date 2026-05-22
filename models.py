@@ -14,6 +14,7 @@ class Product:
     
     # 状态（每轮更新）
     quality_score: float = config.INITIAL_QUALITY  # 质量分
+    cumulative_rd: float = 0.0  # 累计研发投入（跨轮累积，会自然衰减）
     students: int = 0      # 当前学员数
 
     
@@ -62,16 +63,31 @@ class Product:
             "market": self.market,
             "product_type": self.product_type,
             "quality_score": self.quality_score,
+            "cumulative_rd": self.cumulative_rd,
         }
     
     @classmethod
     def from_dict(cls, data: Dict) -> "Product":
-        """反序列化"""
+        """反序列化（兼容旧存档）"""
+        import math
         p = cls(
             market=data["market"],
             product_type=data["product_type"],
-            quality_score=data["quality_score"],
+            quality_score=data.get("quality_score", config.INITIAL_QUALITY),
         )
+        # 兼容旧存档：若存在 cumulative_rd 直接读取，否则根据 quality_score 反推
+        if "cumulative_rd" in data:
+            p.cumulative_rd = data["cumulative_rd"]
+        else:
+            curve = config.RD_CURVES.get(p.product_type, {"base": 60, "cap": 82, "scale": 1_200_000})
+            q = p.quality_score
+            if q >= curve["cap"] - 0.01:
+                p.cumulative_rd = 10_000_000  # 一个很大的值
+            elif q <= curve["base"] + 0.01:
+                p.cumulative_rd = 0.0
+            else:
+                ratio = (curve["cap"] - q) / (curve["cap"] - curve["base"])
+                p.cumulative_rd = -curve["scale"] * math.log(max(ratio, 0.001))
         return p
 
 

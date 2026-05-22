@@ -106,22 +106,34 @@ ROUND_RULES = {
         🎯 Round 1 Goal: Master the Basics
         
         You need to decide for each product:
-        1. R&D spending → Improve quality score
+        1. R&D spending → Improve quality score (diminishing returns, product-specific curves)
         2. Teacher allocation → Ensure service capacity
         3. Marketing investment → Acquire more students
         
-        Pricing uses system defaults this round. Student budget constraints are not yet active.
+        R&D Mechanics:
+        - 1V1: Fast early gains, soft cap ~82 pts. Best for quick brand building.
+        - Class: Balanced curve, soft cap ~90 pts. Steady long-term growth.
+        - APP: Slow early gains, soft cap ~95 pts. Requires massive long-term investment.
+        - Old R&D decays 8% per round — you must keep investing to maintain quality!
+        
+        Pricing uses system defaults this round. Market reference prices are not yet active.
         Focus on understanding: the relationship between R&D and quality, teacher-student ratios, and marketing vs. student acquisition.
         """,
         description_en="""
         🎯 Round 1 Goal: Master the Basics
         
         You need to decide for each product:
-        1. R&D spending → Improve quality score
+        1. R&D spending → Improve quality score (diminishing returns, product-specific curves)
         2. Teacher allocation → Ensure service capacity
         3. Marketing investment → Acquire more students
         
-        Pricing uses system defaults this round. Student budget constraints are not yet active.
+        R&D Mechanics:
+        - 1V1: Fast early gains, soft cap ~82 pts. Best for quick brand building.
+        - Class: Balanced curve, soft cap ~90 pts. Steady long-term growth.
+        - APP: Slow early gains, soft cap ~95 pts. Requires massive long-term investment.
+        - Old R&D decays 8% per round — you must keep investing to maintain quality!
+        
+        Pricing uses system defaults this round. Market reference prices are not yet active.
         Focus on understanding: the relationship between R&D and quality, teacher-student ratios, and marketing vs. student acquisition.
         """,
         enable_rd=True,
@@ -212,6 +224,11 @@ ROUND_RULES = {
         - Focus resources to build brand advantage in one market
         - High-price/high-quality strategy needs enough sales team
         - Balance development across multiple markets
+        - R&D product differentiation matters now:
+          • 1V1 caps at ~82 pts — great for quick brand grabs
+          • Class caps at ~90 pts — best long-term brand score
+          • APP caps at ~95 pts — slow but unbeatable if you survive
+        - Remember: R&D decays 8% per round. Stop investing and your brand fades!
         """,
         description_en="""
         🎯 Round 3 Goal: Build Brand Advantage + Introduce Sales Team
@@ -231,6 +248,11 @@ ROUND_RULES = {
         - Focus resources to build brand advantage in one market
         - High-price/high-quality strategy needs enough sales team
         - Balance development across multiple markets
+        - R&D product differentiation matters now:
+          • 1V1 caps at ~82 pts — great for quick brand grabs
+          • Class caps at ~90 pts — best long-term brand score
+          • APP caps at ~95 pts — slow but unbeatable if you survive
+        - Remember: R&D decays 8% per round. Stop investing and your brand fades!
         """,
         enable_rd=True,
         enable_teachers=True,

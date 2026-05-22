@@ -109,16 +109,23 @@ class GameEngine:
                     product.rd_budget = float(decision.get("rd", 0))
     
     def _apply_rd_effects(self):
-        """应用研发费用对质量分的提升"""
+        """应用研发费用：累计研发衰减 + 本轮投入 + 对数曲线计算质量分"""
+        import math
         for company in self.state.companies.values():
             for product in company.products.values():
-                if product.rd_budget > 0:
-                    # 每1万元研发提升1分质量分
-                    quality_increase = product.rd_budget * config.RD_TO_QUALITY_RATIO
-                    product.quality_score = min(
-                        config.MAX_QUALITY,
-                        product.quality_score + quality_increase
-                    )
+                # 1. 旧研发投入自然衰减（技术过时）
+                product.cumulative_rd *= (1 - config.RD_DECAY_RATE)
+                
+                # 2. 累加本轮研发投入
+                product.cumulative_rd += product.rd_budget
+                product.cumulative_rd = max(0.0, product.cumulative_rd)
+                
+                # 3. 基于累计研发重新计算质量分（对数曲线，软上限）
+                curve = config.RD_CURVES[product.product_type]
+                new_quality = curve["cap"] - (curve["cap"] - curve["base"]) * math.exp(
+                    -product.cumulative_rd / curve["scale"]
+                )
+                product.quality_score = max(curve["base"], new_quality)
     
     def _calculate_brand_effects(self) -> Tuple[Dict, Dict, Dict]:
         """

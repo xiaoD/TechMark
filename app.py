@@ -652,6 +652,12 @@ def render_company_input(company_name, state, rule, round_num, prefill_decisions
                     num_rows="fixed", use_container_width=True,
                     column_config={"1V1": st.column_config.NumberColumn(min_value=0, step=1), "Class": st.column_config.NumberColumn(min_value=0, step=1), "APP": st.column_config.NumberColumn(min_value=0, step=1)}
                 )
+                st.caption(
+                    "📈 R&D Curves (diminishing returns, old R&D decays 8%/round):\n"
+                    "• 1V1 — Fast early gains, soft cap ~82 pts | "
+                    "• Class — Balanced, soft cap ~90 pts | "
+                    "• APP — Slow start, soft cap ~95 pts"
+                )
             else:
                 rd_df = create_matrix_df()
 
