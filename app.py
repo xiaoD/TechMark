@@ -1181,9 +1181,27 @@ query_params = st.query_params
 url_company = query_params.get("company", "")
 url_admin = query_params.get("admin", "") == "1"
 
+ADMIN_PASSWORD = "banyu123"
+
 # 路由到对应页面
 if url_admin:
-    show_admin_page()
+    if not st.session_state.get("admin_authenticated", False):
+        st.markdown(f'<div class="main-header">{t("title")}</div>', unsafe_allow_html=True)
+        st.markdown("### 🔐 主持人登录")
+        pwd = st.text_input("请输入密码", type="password")
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            if st.button("登录", type="primary", use_container_width=True):
+                if pwd == ADMIN_PASSWORD:
+                    st.session_state.admin_authenticated = True
+                    st.rerun()
+                else:
+                    st.error("密码错误，请重试")
+        if st.button("← 返回首页"):
+            st.query_params.clear()
+            st.rerun()
+    else:
+        show_admin_page()
 elif url_company:
     show_player_page(url_company)
 else:
