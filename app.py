@@ -1107,6 +1107,24 @@ def show_landing_page():
     """显示选择页面"""
     st.markdown(f'<div class="main-header">{t("title")}</div>', unsafe_allow_html=True)
     
+    # 活动海报入口
+    st.markdown(
+        """
+        <div style="text-align:center; margin: 1rem 0;">
+            <a href="/poster/" target="_blank" style="
+                display:inline-block; padding: 0.6rem 1.5rem;
+                background: linear-gradient(90deg, #1f77b4, #ff7f0e);
+                color: white; text-decoration: none;
+                border-radius: 8px; font-weight: bold;
+                font-size: 1.05rem;
+            ">
+                🎬 查看活动海报
+            </a>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+    
     config_data = load_game_config()
     
     st.markdown(f"### {t('landing_title')}")
