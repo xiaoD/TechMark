@@ -1116,9 +1116,18 @@ def show_landing_page():
                 background: linear-gradient(90deg, #1f77b4, #ff7f0e);
                 color: white; text-decoration: none;
                 border-radius: 8px; font-weight: bold;
-                font-size: 1.05rem;
+                font-size: 1.05rem; margin-right: 0.5rem;
             ">
                 🎬 查看活动海报
+            </a>
+            <a href="/poster/en/" target="_blank" style="
+                display:inline-block; padding: 0.6rem 1.5rem;
+                background: linear-gradient(90deg, #4a4a4a, #2c2c2c);
+                color: white; text-decoration: none;
+                border-radius: 8px; font-weight: bold;
+                font-size: 1.05rem;
+            ">
+                🎬 View Poster (EN)
             </a>
         </div>
         """,
